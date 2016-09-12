@@ -1,0 +1,21 @@
+PubNub Demo App
+=================================
+
+PubNub instance is shared between all users.
+
+Subscribe
+---------------------------------
+Adds channel(s) to the channels list
+- subscribe
+
+Unsubscribe
+---------------------------------
+Removes channel(s) from the channels list
+- if there are no channels left in subscription list, state should be updated
+
+
+
+
+
+PubNub Channels:
+"*-status" - messages like 'connected', 'disconnected', 'unsubscribed', etc.
