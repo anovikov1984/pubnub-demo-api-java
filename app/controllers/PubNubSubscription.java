@@ -45,7 +45,7 @@ public class PubNubSubscription extends Controller {
         String[] inputChannels = request().queryString().get("channel");
         ObjectNode result = Json.newObject();
 
-        if (inputChannels.length == 0) {
+        if (inputChannels == null || inputChannels.length == 0) {
             result.put("message", "Channel missing");
             return badRequest(result);
         }
@@ -115,7 +115,7 @@ public class PubNubSubscription extends Controller {
         String[] inputChannels = request().queryString().get("channel");
         ObjectNode result = Json.newObject();
 
-        if (inputChannels.length == 0) {
+        if (inputChannels == null || inputChannels.length == 0) {
             result.put("message", "Channel missing");
             return badRequest(result);
         }
@@ -136,7 +136,7 @@ public class PubNubSubscription extends Controller {
         String[] inputChannels = request().queryString().get("channel");
         ObjectNode result = Json.newObject();
 
-        if (inputChannels.length == 0) {
+        if (inputChannels == null || inputChannels.length == 0) {
             result.put("message", "Channel missing");
             return badRequest(result);
         }
