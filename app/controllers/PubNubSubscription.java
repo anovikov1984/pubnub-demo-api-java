@@ -70,6 +70,8 @@ public class PubNubSubscription extends Controller {
     }
 
     public Result appKey() {
+        response().setHeader("Access-Control-Allow-Origin", "*");
+
         ObjectNode result = Json.newObject();
         result.put("app_key", this.appKey);
         return(ok(result));
