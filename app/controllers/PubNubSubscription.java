@@ -42,6 +42,7 @@ public class PubNubSubscription extends Controller {
     }
 
     public Result publishSync() {
+        response().setHeader("Access-Control-Allow-Origin", "*");
         String[] inputChannels = request().queryString().get("channel");
         ObjectNode result = Json.newObject();
 
@@ -62,10 +63,12 @@ public class PubNubSubscription extends Controller {
 
     public Result publishAsync() {
         // TODO: implement
+        response().setHeader("Access-Control-Allow-Origin", "*");
         return new Result(501);
     }
 
     public Result publishAsync2() {
+        response().setHeader("Access-Control-Allow-Origin", "*");
         return new Result(501);
     }
 
@@ -81,6 +84,7 @@ public class PubNubSubscription extends Controller {
      * Listen for the first message on all subscribed channels
      */
     public Result listen() {
+        response().setHeader("Access-Control-Allow-Origin", "*");
         ObjectNode result = Json.newObject();
         SubscribeListener listener = new SubscribeListener();
         pubnub.addListener(listener);
@@ -98,6 +102,7 @@ public class PubNubSubscription extends Controller {
     }
 
     public Result index() {
+        response().setHeader("Access-Control-Allow-Origin", "*");
         ObjectNode result = Json.newObject();
         try {
             List<String> channels = pubnub.getSubscribedChannels();
@@ -114,6 +119,7 @@ public class PubNubSubscription extends Controller {
      * Add channels to the subscription
      */
     public Result AddChannel() {
+        response().setHeader("Access-Control-Allow-Origin", "*");
         String[] inputChannels = request().queryString().get("channel");
         ObjectNode result = Json.newObject();
 
@@ -135,6 +141,7 @@ public class PubNubSubscription extends Controller {
      * Remove channels from the subscription
      */
     public Result RemoveChannel() {
+        response().setHeader("Access-Control-Allow-Origin", "*");
         String[] inputChannels = request().queryString().get("channel");
         ObjectNode result = Json.newObject();
 
