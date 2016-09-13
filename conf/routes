@@ -2,5 +2,9 @@ GET        /subscription/list          controllers.PubNubSubscription.index
 GET        /subscription/add           controllers.PubNubSubscription.AddChannel
 GET        /subscription/remove        controllers.PubNubSubscription.RemoveChannel
 
-GET        /publish                    controllers.PubNubSubscription.publish
+GET        /publish/sync               controllers.PubNubSubscription.publishSync
+GET        /publish/async              controllers.PubNubSubscription.publishAsync
+GET        /publish/async2             controllers.PubNubSubscription.publishAsync2
+
 GET        /listen                     controllers.PubNubSubscription.listen
+GET        /app_key                    controllers.PubNubSubscription.appKey

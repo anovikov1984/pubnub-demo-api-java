@@ -20,14 +20,14 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 
 @Singleton
 public class PubNubSubscription extends Controller {
 
     private PubNub pubnub;
-    private static final String CHANNEL = "pubnub_demo_api_java_channel";
-    private static final String EVENTS_CHANNEL = "pubnub_demo_api_python_events";
+    private String appKey = UUID.randomUUID().toString();
 
     @Inject
     public PubNubSubscription() {
@@ -41,41 +41,70 @@ public class PubNubSubscription extends Controller {
         pubnub.addListener(listener);
     }
 
-    public Result publish() {
-        try {
-            PNPublishResult result = pubnub.publish().channel(CHANNEL).message("hey").sync();
-            return ok("success: " + result.getTimetoken().toString());
-        } catch (PubNubException e) {
-            return internalServerError("something went wrong(: " + e.getErrormsg());
+    public Result publishSync() {
+        String[] inputChannels = request().queryString().get("channel");
+        ObjectNode result = Json.newObject();
+
+        if (inputChannels.length == 0) {
+            result.put("message", "Channel missing");
+            return badRequest(result);
         }
+
+        try {
+            PNPublishResult publishResult = pubnub.publish().channel(inputChannels[0]).message("hey").sync();
+            result.put("original_result", publishResult.getTimetoken().toString());
+            return ok(result);
+        } catch (PubNubException e) {
+            result.put("message", e.getErrormsg());
+            return internalServerError(result);
+        }
+    }
+
+    public Result publishAsync() {
+        // TODO: implement
+        return new Result(501);
+    }
+
+    public Result publishAsync2() {
+        return new Result(501);
+    }
+
+    public Result appKey() {
+        ObjectNode result = Json.newObject();
+        result.put("app_key", this.appKey);
+        return(ok(result));
     }
 
     /**
      * Listen for the first message on all subscribed channels
      */
     public Result listen() {
+        ObjectNode result = Json.newObject();
         SubscribeListener listener = new SubscribeListener();
         pubnub.addListener(listener);
 
         try {
-            PNMessageResult result = listener.waitForMessage();
-            return ok("received message: " + result.getMessage().toString());
+            PNMessageResult listenResult = listener.waitForMessage();
+            result.put("message", listenResult.getMessage().toString());
+            return ok();
         } catch (InterruptedException e) {
-            return internalServerError(e.getMessage());
+            result.put("message", e.getMessage());
+            return internalServerError(result);
         } finally {
             pubnub.removeListener(listener);
         }
     }
 
     public Result index() {
+        ObjectNode result = Json.newObject();
         try {
-            ObjectNode result = Json.newObject();
             List<String> channels = pubnub.getSubscribedChannels();
             ArrayNode channelsArray = result.putArray("subscribed_channels");
             channels.forEach(channelsArray::add);
             return ok(result);
         } catch (Exception e) {
-            return internalServerError();
+            result.put("message", e.getMessage());
+            return internalServerError(result);
         }
     }
 
@@ -136,7 +165,7 @@ public class PubNubSubscription extends Controller {
             }
 
             try {
-                pubnub.publish().channel(PubNubSubscription.EVENTS_CHANNEL).message(event).sync();
+                pubnub.publish().channel(String.format("status-%s", appKey)).message(event).sync();
             } catch (PubNubException e) {
                 e.printStackTrace();
             }
